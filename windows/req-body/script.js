@@ -3,7 +3,6 @@ import 'https://cdn.jsdelivr.net/npm/material-dynamic-colors@1.1.2/dist/cdn/mate
 import van from "https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.5.2.min.js"
 
 const {
-	article,
 	h5,
 	div,
 	textarea,
@@ -12,12 +11,13 @@ const {
 function ReqBodyWindow() {
 	const { reqBodyOnchange, reqBody } = window.dto
 
-	return article(
+	return div(
+		{class: 'win'},
 		h5('Request Body'),
 		div(
 			{class: 'field textarea border extra'},
 			textarea({
-				onkeyup() { reqBodyOnchange(this.value === '' ? undefined : this.value) },
+				onkeyup() { reqBodyOnchange(this.value) },
 			}, reqBody),
 		)
 	)

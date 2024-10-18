@@ -4,14 +4,35 @@ import van from "https://cdn.jsdelivr.net/gh/vanjs-org/van/public/van-1.5.2.min.
 
 import { openWindow, windows } from '../../lib/window.js'
 
-const {header, nav, div, input, i, button, span, select, option} = van.tags
+const {
+	header,
+	nav,
+	div,
+	input,
+	i,
+	button,
+	span,
+	select,
+	option
+} = van.tags
+
+function headersToObject(plainTextHeaders) {
+	const objectHeaders = {}
+
+	for (const line of plainTextHeaders.split('\n')) {
+		const [key, value] = line.split('=')
+		objectHeaders[key] = value
+	}
+
+	return objectHeaders
+}
 
 async function sendRequest({url, method, reqBody, headers}) {
-	console.log(url, method, headers, reqBody)
-
 	try {
 		const resp = await fetch(url, {
-			method, body: reqBody, headers
+			method,
+			body: reqBody ? reqBody : undefined,
+			headers: headers ? headersToObject(headers) : {},
 		})
 
 		const respBody = await resp.text()
@@ -22,7 +43,7 @@ async function sendRequest({url, method, reqBody, headers}) {
 			height: 750,
 			isCentered: true,
 			dto: {
-				status: resp.status,
+				status: `${resp.status} ${resp.statusText}`,
 				body: respBody,
 				headers: resp.headers,
 			}
@@ -35,8 +56,8 @@ async function sendRequest({url, method, reqBody, headers}) {
 function MainWindow() {
 	let reqUrl = 'https://example.com'
 	let reqMethod = 'GET'
-	let reqBody
-	let reqHeaders
+	let reqBody = ''
+	let reqHeaders = ''
 
 	return div(
 		header(nav(
@@ -64,6 +85,7 @@ function MainWindow() {
 						width: 600,
 						height: 450,
 						isCentered: true,
+						isNotResizable: true,
 						dto: {
 							reqBodyOnchange(body) {
 								reqBody = body
@@ -79,8 +101,9 @@ function MainWindow() {
 					openWindow(windows.reqHeaders, {
 						title: 'Request headers form',
 						width: 600,
-						height: 800,
+						height: 450,
 						isCentered: true,
+						isNotResizable: true,
 						dto: {
 							reqHeadersOnchange(headers) {
 								reqHeaders = headers
@@ -108,7 +131,6 @@ function MainWindow() {
 				input({
 					type: 'text',
 					onkeyup() {
-						console.log(this.value)
 						reqUrl = this.value
 					}
 				}),
