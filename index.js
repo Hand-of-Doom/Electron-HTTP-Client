@@ -5,7 +5,7 @@ const createWindow = () => {
     width: 650,
 		minWidth: 490,
     height: 197,
-		minHeight: 186,
+		minHeight: 197,
   })
 
   win.loadFile('windows/main/index.html')
